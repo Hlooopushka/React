@@ -2,21 +2,21 @@ import React, {useState, useEffect} from 'react';
 import { Button, Header, Modal, Form } from 'semantic-ui-react';
 import axios from 'axios';
 
-function CustomerModal(props) {
-const {showCreateModal, openCreateModal, fetchCustomer} = props;
+function StoreModal(props) {
+const {showStoreModal, openCreateModal, fetchStore} = props;
 const [Name, setName] = useState("");
 const [Addresse, setAddresse] = useState("");
 const [icon, setIcon] = useState("")
 
 
-const createCustomer = () => {
+const createStore = () => {
     axios
-    .post("Customers/PostCustomer", {
+    .post("Stores/PostStore", {
         Name: Name,
         Addresse: Addresse
     })
     .then(({ data }) => {
-        fetchCustomer();
+        fetchStore();
         openCreateModal(false)
         console.log(data);
         
@@ -32,29 +32,32 @@ const createCustomer = () => {
       });
 };
   return (
-    <Modal open={showCreateModal}>
-      <Modal.Header>Create customer</Modal.Header>
+    <Modal open={showStoreModal}>
+      <Modal.Header>Create store</Modal.Header>
       <Modal.Content>
       <Form>
     <Form.Field>
       <label>Name</label>
-      <input placeholder='Name' onChange={(e) => setName(e.target.value)}/>
+      <input placeholder='Name' onChange={(e) => 
+        setName(e.target.value)}/>
     </Form.Field>
     <Form.Field>
       <label>Addresse</label>
-      <input placeholder='Addresse' onChange={(e) => setAddresse(e.target.value)}/>
+      <input placeholder='Addresse' onChange={(e) => 
+        setAddresse(e.target.value)}/>
     </Form.Field>
   </Form>
       </Modal.Content>
       <Modal.Actions>
-        <Button color='black' onClick={() => openCreateModal(false)}>
+        <Button color='black' onClick={() => 
+            openCreateModal(false)}>
           Cancel
         </Button>
         <Button
           content="create"
           labelPosition='right'
           icon='checkmark'
-        onClick={createCustomer}
+        onClick={createStore}
           positive
         />
       </Modal.Actions>
@@ -62,4 +65,4 @@ const createCustomer = () => {
   );
 }
 
-export default CustomerModal;
+export default StoreModal;

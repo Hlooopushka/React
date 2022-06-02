@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-//import { Button } from 'reactstrap';
 import { Icon, Label, Menu, Table, Button, Pagination } from 'semantic-ui-react';
-//import styled from 'styled-components';
+import axios from "axios";
+import BackgroundLoader from '../NavItems/BackgroundLoader';
 
 
 class Product extends Component {
@@ -11,6 +11,19 @@ constructor(props) {
     this.state = {
     };
 }
+fetchCustomer = () => {
+  axios
+  .get("Products/getProduct")
+  .then(({ data }) => {
+    // this.setState({
+    //   customers: data,
+    // });
+   console.log(data);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+};
 
     render() {
         return( <div>

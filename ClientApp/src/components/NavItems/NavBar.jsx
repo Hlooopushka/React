@@ -4,7 +4,9 @@ import { NavLink, withRouter } from 'react-router-dom'
 
 
 export default class NavBar extends Component {
-    state = { activeItem: 'customer' }
+    state = { activeItem: 'customer',
+             
+  }
   
     handleItemClick = (e, { name }) => {
       this.setState({ activeItem: name })
@@ -32,7 +34,7 @@ export default class NavBar extends Component {
             onClick={this.handleItemClick} 
           />
           <Menu.Item
-            as={NavLink} to="/stores"
+            as={NavLink} to="/store"
             name='store'
             active={activeItem === 'store'}
             onClick={this.handleItemClick}

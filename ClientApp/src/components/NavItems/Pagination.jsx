@@ -3,7 +3,7 @@ import { useTable, Pagination } from "react-table";
 
 import "./table.css";
 
-export const Pagination = ({ columns, data }) => {
+export default Pagination = ({ columns, data }) => {
     <Menu>
       <Pagination defaultActivePage={1} totalPages={1} colSpan='4'/>
   </Menu>
