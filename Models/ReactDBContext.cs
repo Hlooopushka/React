@@ -57,8 +57,6 @@ namespace React.Models
 
             modelBuilder.Entity<Sales>(entity =>
             {
-                entity.Property(e => e.DateSold).HasColumnType("datetime");
-
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Sales)
                     .HasForeignKey(d => d.CustomerId)

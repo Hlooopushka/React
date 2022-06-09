@@ -2,17 +2,17 @@ import React, {useState, useEffect} from 'react';
 import { Button, Header, Modal, Form } from 'semantic-ui-react';
 import axios from 'axios';
 
-function EditCustomer(props) {
+function EditProductMod(props) {
 const {showEditModal, openEditModal, closeEditModal} = props;
 const [name, setName] = useState(props.name);
-const [addresse, setAddresse] = useState(props.addresse);
+const [price, setPrice] = useState(props.price);
 const [icon, setIcon] = useState('');
 
-const editCustomer = async (id) => {
-await axios.put(`Customers/PutCustomer/${id}`,{
+const editProduct = async (id) => {
+await axios.put(`Products/PutProduct/${id}`,{
   "id": id,
   "name": name,
-  "addresse": addresse,
+  "price": price,
   "sales": []
 })
 .then(()=>{closeEditModal()})
@@ -22,7 +22,7 @@ await axios.put(`Customers/PutCustomer/${id}`,{
 };
   return (
     <Modal open={showEditModal}>
-      <Modal.Header>edit Customer number {props.id}
+      <Modal.Header>edit Product number {props.id}
       </Modal.Header>
     <Modal.Content>
       <Form>
@@ -32,9 +32,9 @@ await axios.put(`Customers/PutCustomer/${id}`,{
             onChange={(e) => setName(e.target.value)} />
         </Form.Field>
         <Form.Field>
-          <label>Addresse</label>
-          <input placeholder="Addresse"
-            onChange={(e) => setAddresse(e.target.value)}/>
+          <label>Price</label>
+          <input placeholder="Price"
+            onChange={(e) => setPrice(e.target.value)}/>
         </Form.Field>
       </Form>
     </Modal.Content>
@@ -46,7 +46,7 @@ await axios.put(`Customers/PutCustomer/${id}`,{
           content="edit"
           labelPosition='right'
           icon='checkmark'
-          onClick={()=>editCustomer(props.id)}
+          onClick={()=>editProduct(props.id)}
           positive
         />
     </Modal.Actions> 
@@ -54,4 +54,4 @@ await axios.put(`Customers/PutCustomer/${id}`,{
   );
 }
 
-export default EditCustomer;
+export default EditProductMod;

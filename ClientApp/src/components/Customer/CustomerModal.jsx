@@ -3,7 +3,7 @@ import { Button, Header, Modal, Form } from 'semantic-ui-react';
 import axios from 'axios';
 
 function CustomerModal(props) {
-const {showCreateModal, openCreateModal, fetchCustomer} = props;
+const {showCreateModal, openCreateModal} = props;
 const [Name, setName] = useState("");
 const [Addresse, setAddresse] = useState("");
 const [icon, setIcon] = useState("")
@@ -16,10 +16,8 @@ const createCustomer = () => {
         Addresse: Addresse
     })
     .then(({ data }) => {
-        fetchCustomer();
         openCreateModal(false)
         console.log(data);
-        
         this.setState({
           loading: false,
         });

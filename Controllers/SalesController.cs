@@ -31,7 +31,9 @@ namespace React.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Sales>> GetSales(int id)
         {
+
             var sales = await _context.Sales.FindAsync(id);
+
 
             if (sales == null)
             {
@@ -39,7 +41,59 @@ namespace React.Controllers
             }
 
             return sales;
+
         }
+        /*return await _context.Sales.Include(r => r.Customer).Include(r => r.Product).Include(r => r.Store).ToListAsync();*/
+
+      /*  // GET: api/Sales/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Sales>> GetCustomerSales(int id)
+        {
+
+            var sales = await _context.Sales.FindAsync(id);
+
+
+            if (sales == null)
+            {
+                return NotFound();
+            }
+
+            return sales;
+
+        }
+
+        // GET: api/Sales/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Sales>> GetProductSales(int id)
+        {
+
+            var sales = await _context.Sales.FindAsync(id);
+
+
+            if (sales == null)
+            {
+                return NotFound();
+            }
+
+            return sales;
+
+        }
+        // GET: api/Sales/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Sales>> GetStoreSales (int id)
+        {
+
+            var sales = await _context.Sales.FindAsync(id);
+
+
+            if (sales == null)
+            {
+                return NotFound();
+            }
+
+            return sales;
+
+        }*/
 
         // PUT: api/Sales/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
