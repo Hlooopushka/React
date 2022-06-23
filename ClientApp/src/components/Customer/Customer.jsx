@@ -1,132 +1,158 @@
-import React, { Component } from 'react';
-import { Icon, Label, Menu, Table, Button, Pagination } from 'semantic-ui-react';
+import React, {useState, useEffect} from 'react'
 import axios from "axios";
-import BackgroundLoader from '../NavItems/BackgroundLoader';
-import './customer.css';
-import CustomerModal from './CustomerModal';
+import BackgroundLoader from '../NavItems/BackgroundLoader'
+import DisplayTable from '../NavItems/DisplayTable';
+import CreditModal from '../NavItems/CreditModal';
+import { Button } from 'semantic-ui-react';
+import Error from '../NavItems/Error'
+import Pagination from '../NavItems/Pagination';
+import {setPages} from '../../utils/setPages'
+import PageSelect from '../NavItems/PageSelect';
 
+function Customer () {
+    const [loading, setLoading] = useState(false)
+    const [modal, setModal] = useState({visible: false, type: 'create'})
+    const [customers, setCustomers] = useState([]);
+    const [items, setItems] = useState([])
+    const [currentId, setCurrentId] = useState('')
+    const [error, setError] = useState({visible: false, message: ''})
+    const [perPage,setPerPage] = useState(10)
 
-class Customer extends Component {
-constructor(props) {
-    super(props);
-    this.state = {
-      customers: [],
-      loading: false,
-      showCreateModal: false,
-    };
-}
-
-componentDidMount() {
-  this.fetchCustomer();
-}
-
-fetchCustomer = () => {
-  axios
-  .get("Customers/GetCustomer")
-  .then(({ data }) => {
-    this.setState({
-      customers: data,
-    });
-   console.log(data);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-};
-
-// createCustomer = (id) => {
-//   axios
-//   .create(`Customers/PostCustomer/${id}`)
-//   .then(({ data }) => {
-//     this.setState({
-//       customers: data,
-//     });
-//     console.log(data);
-//   })
-//   .catch(err => {
-//     console.log(err);
-//   })
-// }
-
-deleteRecord = (id) => {
-  this.setState({
-    loading: true,
-  });
-  axios
-  .delete(`Customers/DeleteCustomer/${id}`)
-  .then(({ data }) => {
-    this.fetchCustomer();
-    console.log(data);
-    this.setState({
-      loading: false,
-    });
-  })
-  .catch(err => {
-    console.log(err);
-    this.setState({
-      loading: false,
-    });
-  });
-}; 
-
-openCreateModal = (value) => {
-  this.setState({
-    showCreateModal : value,
-  });
-}
-
-    render() {
-          const { customers, loading, showCreateModal} = this.state;
-        return loading ? (
-          <BackgroundLoader/>
-        ) : ( <div>
-          {/* props = showCreateModal and a state = showCreateModal */}
-          <CustomerModal showCreateModal={showCreateModal} openCreateModal={this.openCreateModal} fetchCustomer={this.fetchCustomer}/>
-         <Button primary onClick={() => this.openCreateModal(true)}>New Customer</Button>
-        <Table celled basic>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Addresse</Table.HeaderCell>
-            <Table.HeaderCell>Actions</Table.HeaderCell>
-            <Table.HeaderCell>Actions</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-
-
-          {customers.map((s, index) => {
-            return ( 
-            <><Table.Row key={`${s.name}${index}`} >
-              <Table.Cell className='classCell'>{s.name}
-              </Table.Cell>
-
-              <Table.Cell>{s.addresse}
-              </Table.Cell>
-
-              <Table.Cell>
-                <Button color='yellow' Icon='edit' onClick={() => this.updateRecord(s.id)}> EDIT
-                </Button>
-              </Table.Cell>
-
-              <Table.Cell>
-                <Button color='red' Icon='trash' onClick={() => this.deleteRecord(s.id)}>DELETE
-                </Button>
-                </Table.Cell>
-
-                
-            </Table.Row>
-            <Table.Row>
-              </Table.Row></>)
-          })}
-
-
-
-        </Table.Body>
-      </Table>
-       </div>
-        );
-        }
+    const fetchCustomers = async () => {
+        const result = await axios
+        .get("Customers/GetCustomer")
+        .catch(err => {
+            console.log(`No customers to display: ${err}`);
+        })
+        setCustomers(result.data)
     }
-// }
+
+    const createCustomer = (name, address) => {
+        setLoading(true)
+        axios
+        .post("Customers/PostCustomer", {
+            Name: name,
+            Addresse: address
+        })
+        .then(() => {
+            toggleModal('create')
+            setLoading(false)
+            fetchCustomers()
+          })
+          .catch(err => {
+            toggleModal('create')
+            setLoading(false)
+            setError({visible: true, message: err.message})
+            console.log(err);
+          });
+       
+    };
+
+    const editCustomer = (id, name, addresse) => {
+    setLoading(true)
+         axios.put(`Customers/PutCustomer/${id}`,{
+          "id": id,
+          "name": name,
+          "addresse": addresse,
+          "sales": []
+        })
+        .then(()=>{
+            toggleModal('edit')
+            setLoading(false)
+            fetchCustomers()
+        })
+        .catch(err => {
+                toggleModal('edit')
+                setLoading(false)
+                setError({visible: true, message: err.message})
+                console.log(err);
+           });
+        
+}
+
+const deleteItem = (id) => {
+    setLoading(true)
+      axios
+      .delete(`Customers/DeleteCustomer/${id}`)
+      .then(() => {
+        setLoading(false)
+        fetchCustomers()
+      })
+      .catch(err => {
+            setLoading(false)
+            setError({visible: true, message: err.message})
+            console.log(err);
+      });
+}
+
+const toggleModal = (type, id) => {
+    setCurrentId(id)
+    setModal((state) =>{
+        return {visible: !state.visible, type}
+     })
+ }
+
+ useEffect(() => {
+    fetchCustomers()
+},[])
+
+useEffect(()=>{
+    if (customers.length > 0) {changePage(1)}  
+},[customers])
+
+useEffect(() => {
+    changePage(1)
+},[perPage])
+
+const changePerPage = (e) => {
+    setPerPage(parseInt(e.target.value))
+    const tmpArray = customers.slice(0 , parseInt(e.target.value))
+    setItems(tmpArray)
+}
+
+const changePage = (page) => {
+    let startItem = (page-1) * perPage;
+    let endItem = startItem + perPage
+    const tmpArray = customers.slice(startItem , endItem)
+    setItems(tmpArray)
+}
+useEffect(()=>{
+    error.visible && setTimeout(()=>{setError({visible: false, message: ''})},5000)
+},[error])
+
+    if (loading) {return <BackgroundLoader/>}
+
+    return (
+        <>
+        <CreditModal
+            showModal={modal.visible}
+            type={modal.type}
+            id={currentId} 
+            createItem={createCustomer}
+            editItem={editCustomer}
+            toggleModal={toggleModal}
+            customers={customers}
+            />
+        <Button primary onClick={() => toggleModal('create')}>New Customer</Button>
+        {error.visible && <Error message={error.message}/>}
+        <DisplayTable 
+            items={items}
+            openModal={toggleModal}
+            deleteItem={deleteItem}
+            />
+        <div className="paginator-container">
+            <PageSelect
+            changePerPage={changePerPage}/>
+            <Pagination
+                changePage={changePage} 
+                maxPages={setPages(customers, perPage)}
+                perPage={perPage}
+            />
+        </div>
+           
+        </>
+        
+    )
+}
+
 export default Customer;
