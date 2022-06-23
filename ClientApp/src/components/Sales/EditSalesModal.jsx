@@ -15,7 +15,7 @@ await axios.put(`Sales/PutSales/${id}`,{
   "id": id,
   "customer": customer,
   "product": Product,
-  "store": [],
+  "store": Store,
   "sales": []
 })
 .then(()=>{closeEditModal()})
@@ -31,11 +31,11 @@ await axios.put(`Sales/PutSales/${id}`,{
       <Form>
         <Form.Field>
           <label>Date sold</label>
-          <input type="Date" onChange={(e) => setDate(e.target.value)}/>
+          <input type="Date" onChange={(e) => setDate(new Date(e.target.value).toLocaleDateString('en-US'))}/>
           </Form.Field>
 
           <Form.Field>
-          <label>Customer</label>s
+          <label>Customer</label>
           <input 
             onChange={(e) => setCustomer(e.target.value)} />
         </Form.Field>

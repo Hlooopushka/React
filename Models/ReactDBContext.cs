@@ -52,11 +52,13 @@ namespace React.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             });
 
             modelBuilder.Entity<Sales>(entity =>
             {
+                entity.Property(e => e.DateSold).HasColumnType("date");
+
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Sales)
                     .HasForeignKey(d => d.CustomerId)

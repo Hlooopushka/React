@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Button, Header, Modal, Form } from 'semantic-ui-react';
 import axios from 'axios';
+import Pagination from 'semantic-ui-react';
 
 function StoreModal(props) {
 const {showStoreModal, openCreateModal, fetchStore} = props;

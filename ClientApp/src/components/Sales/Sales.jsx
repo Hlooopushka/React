@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Icon, Label, Menu, Table, Button, Pagination } from 'semantic-ui-react';
+import { Icon, Label, Menu, Table, Button} from 'semantic-ui-react';
 import axios from "axios";
 import BackgroundLoader from '../NavItems/BackgroundLoader';
 import SalesModal from './SalesModal';
 import EditSales from './EditSalesModal';
-
-// import Pagination from '../NavItems/Pagination';
+import Pagination from '../NavItems/Pagination';
+import PageSelect from '../NavItems/PageSelect';
+import {setPages} from '../../utils/setPages'
 
 
 
@@ -24,22 +25,46 @@ constructor(props) {
       currentCustomer: '',
       currentProduct: '',
       currentStore:'',
+      perPage: 10,
+      items:[],
+      Date: Date()
     };
 }
+// currentDate() {
+
+// }
 componentDidMount() {
   this.fetchSales();
   this.fetchCustomer()
   this.fetchStore()
   this.fetchProduct()
   this.setState({currentSales: this.state.sales[0]})
+  
 }
+// componentWillUnmount() {
+//   if (this.state.sales.length > 0) {this.changePage(1)}  
+// }
+
+changePerPage = (e) => {
+  this.setState({perPage:e.target.value})
+  const tmpArray = this.state.sales.slice(0 , e.target.value)
+  this.setState({items:tmpArray})
+}
+
+
+changePage = (page) => {
+  let startItem = (page-1) * this.state.perPage;
+  let endItem = startItem + this.state.perPage
+  const tmpArray = this.state.sales.slice(startItem , endItem)
+  this.setState({items:tmpArray})
+}
+
 fetchCustomer() {
   axios.get("Customers/GetCustomer").then((res) => {
     this.setState({
     customers:res.data,
   });})
   };
-  
 fetchStore = () => {
     axios.get("Stores/getStore").then((res) => {
       this.setState({
@@ -54,6 +79,7 @@ fetchProduct() {
         };     
 
 
+        
 fetchSales = () => {
   axios
   .get("Sales/GetSales")
@@ -61,6 +87,7 @@ fetchSales = () => {
     this.setState({
       sales: data,
     });
+    this.changePage(1)
   })
   .catch((err) => {
     console.log(err);
@@ -76,7 +103,7 @@ openCreateSalesModal = (value) => {
 }
 openEditSalesModal = (value, id, customer, product,  store) => {
   this.setState({currentId: id, currentCustomer: customer, 
-    currentProduct: product, currentDate: Date, currentStore: store })
+    currentProduct: product, currentDate: new Date, currentStore: store })
   this.setState({
     showEditModal: value,
     
@@ -133,7 +160,7 @@ getStoreName(id) {
           customers={this.state.customers}
           store={this.state.store}
           product={this.state.product}
-        
+          
           
           />
          <Button primary onClick={() => 
@@ -161,17 +188,17 @@ getStoreName(id) {
                 store={this.state.currentStore}
                 closeEditModal={this.closeEditModal}
                 />
-          {sales.map((s, index) => {
+          {this.state.items.map((s) => {
             return ( 
             <Table.Row key={s.id} >
               <Table.Cell className='classCell'>{this.getCustomerName(s.customerId)}</Table.Cell>
               <Table.Cell>{this.getProductName(s.productId)}</Table.Cell>
               <Table.Cell>{this.getStoreName(s.storeId)}</Table.Cell>
-              <Table.Cell>{s.dateSold}</Table.Cell>
+              <Table.Cell>{new Date(s.dateSold).toLocaleDateString('en-US')}</Table.Cell>
               <Table.Cell>
-                
                 <Button color='yellow' onClick={() => 
-                  this.openEditSalesModal(true, s.id, s.customer, s.product,s.Date, s.store)}><Icon name='edit'/> EDIT</Button></Table.Cell>
+                  this.openEditSalesModal(true, s.id, s.customer, s.product,s.Date, s.store)}>
+                    <Icon name='edit'/> EDIT</Button></Table.Cell>
               <Table.Cell>
                 <Button color='red' onClick={() => 
                   this.deleteRecord(s.id)}><Icon name='trash'/>DELETE
@@ -185,6 +212,16 @@ getStoreName(id) {
         
       </Table>
       {/* s */}
+      <div className="paginator-container">
+            <PageSelect
+            changePerPage={this.changePerPage}/>
+            <Pagination
+                changePage={this.changePage} 
+                maxPages={setPages(this.state.sales, this.state.perPage)}
+                perPage={this.state.perPage}
+            />
+        </div>
+
        </div>
         );
         }

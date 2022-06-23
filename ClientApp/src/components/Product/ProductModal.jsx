@@ -40,7 +40,7 @@ const createProduct = () => {
     </Form.Field>
     <Form.Field>
       <label>Price</label>
-      <input placeholder='Price' onChange={(e) => setPrice(e.target.value)}/>
+      <input type="number" placeholder='Price' required min="0" step="0.05"  onChange={(e) => setPrice(e.target.value)}/>
     </Form.Field>
   </Form>
       </Modal.Content>

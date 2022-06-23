@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Icon, Label, Menu, Table, Button, Pagination } from 'semantic-ui-react';
+import { Icon, Label, Menu, Table, Button } from 'semantic-ui-react';
 import axios from "axios";
 import BackgroundLoader from '../NavItems/BackgroundLoader';
 import ProductModal from './ProductModal';
 import EditProductMod from './EditProductMod';
-//import { fetchCustomer } from '../../utils/fetchCustomers';
-// import Pagination from '../NavItems/Pagination';
-
+import Pagination from '../NavItems/Pagination';
+import PageSelect from '../NavItems/PageSelect';
+import {setPages} from '../../utils/setPages'
 
 
 class Product extends Component {
@@ -19,19 +19,47 @@ constructor(props) {
       showEditModal: false,
       currentId: null,
       currentName: '',
-      currentAddress: '' 
+      currentAddress: '',
+      perPage: 10,
+      items:[]
     };
 }
 
-fetchProduct() {
-  axios.get("Products/GetProduct").then((res) => {this.setState({
-    product:res.data,
-  });})
-  };
-
 componentDidMount() {
   this.fetchProduct()
-  this.setState({currentProduct: this.state.product[0]})
+  this.changePage(1)
+  //this.setState({currentProduct: this.state.product[0]})
+  
+}
+
+fetchProduct() {
+  axios.get("Products/GetProduct")
+  .then((res) => {
+    this.setState({
+    product:res.data,
+  });
+  this.changePage(1)
+})
+  };
+
+// componentWillUnmount() {
+//   if (this.state.product.length > 0) {this.changePage(1)}  
+// }
+
+
+changePerPage = (e) => {
+  this.setState({perPage:parseInt(e.target.value)})
+  const tmpArray = this.state.product.slice(0 , parseInt(e.target.value))
+  this.setState({items:tmpArray});
+
+  }
+
+
+changePage = (page) => {
+  let startItem = (page-1) * this.state.perPage;
+  let endItem = startItem + this.state.perPage;
+  const tmpArray = this.state.product.slice(startItem , endItem);
+  this.setState({items:tmpArray});
 }
 
 openCreateModal = (value) => {
@@ -60,7 +88,7 @@ deleteRecord = (id) => {
   });
   axios
   .delete(`Products/DeleteProduct/${id}`)
-  .then(({ data }) => {
+  .then(() => {
     this.fetchProduct()
     this.setState({
       loading: false,
@@ -103,7 +131,7 @@ deleteRecord = (id) => {
                 price={this.state.currentPrice}
                 closeEditModal={this.closeEditModal}
                 />
-          {product.map((s, index) => {
+          {this.state.items.map((s, index) => {
             return ( 
             <Table.Row key={`${s.name}${index}`} >
               <Table.Cell className='classCell'>{s.name}</Table.Cell>
@@ -131,25 +159,15 @@ deleteRecord = (id) => {
         </Table.Body>
         
       </Table>
-      {/* <Table.Footer>
-       
-        <Table.Row>
-          <Table.HeaderCell colSpan='3'>
-            <Menu floated='right' pagination>
-              <Menu.Item as='a' icon>
-                <Icon name='chevron left' />
-              </Menu.Item>
-              <Menu.Item as='a'>1</Menu.Item>
-              <Menu.Item as='a'>2</Menu.Item>
-              <Menu.Item as='a'>3</Menu.Item>
-              <Menu.Item as='a'>4</Menu.Item>
-              <Menu.Item as='a' icon>
-                <Icon name='chevron right' />
-              </Menu.Item>
-            </Menu>
-          </Table.HeaderCell>
-        </Table.Row>
-      </Table.Footer> */}
+      <div className="paginator-container">
+            <PageSelect
+            changePerPage={this.changePerPage}/>
+            <Pagination
+                changePage={this.changePage} 
+                maxPages={setPages(product, this.state.perPage)}
+                perPage={this.state.perPage}
+            />
+        </div>
        </div>
         );
         }

@@ -12,12 +12,13 @@ const [icon, setIcon] = useState("");
 
 
 const createSale = () => {
+  console.log(date);
     axios
     .post("Sales/PostSales", {
         customerId: Customer,
         productId: Product,
         storeId: Store,
-        dateSold: date.toLocaleDateString("en-US"),
+        dateSold: date,
         customer: null
     })
     .then(({ data }) => {
@@ -41,7 +42,7 @@ const createSale = () => {
       <Form>
       <Form.Field>
       <label>Date sold</label>
-      <input type="Date" onChange={(e) => setDate(new Date(e.target.value))}/>
+      <input type="Date" onChange={(e) => setDate(e.target.value)}/>
     </Form.Field>
       <Form.Field>
       <label>Customer</label>
