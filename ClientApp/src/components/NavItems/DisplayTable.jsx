@@ -12,7 +12,7 @@ const DisplayTable = ({items , openModal, deleteItem}) => {
              </Table.Row>
             </Table.Header>
         <Table.Body>
-        {items.map((item) => {
+        {items.length && items.map((item) => {
             return ( 
             <Table.Row key={item.id} >
               <Table.Cell className='classCell'>{item.name}</Table.Cell>

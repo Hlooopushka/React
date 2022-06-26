@@ -15,7 +15,7 @@ export default class App extends Component {
   render () {
     return (
       <Layout>
-        <Route path='/customer' component={Customer} />
+        <Route path='/customer' index component={Customer} />
         <Route path='/product' component={Product} />
         <Route path='/store' component={Store} />
         <Route path='/sales' component={Sales} />
