@@ -45,11 +45,11 @@ const item = getValues(id);
       <Form>
         {error.visible && <h4 style={{'color':"red"}}>{error.msg}</h4>}
     <Form.Field>
-      <label>Name</label>
+      <label>NAME</label>
       <input value={name} onChange={(e) => setName(e.target.value)}/>
     </Form.Field>
     <Form.Field>
-      <label>Addresse</label>
+      <label>ADDRESS</label>
       <input value={addresse} onChange={(e) => setAddresse(e.target.value)}/>
     </Form.Field>
   </Form>
