@@ -2,29 +2,50 @@ import React, {useState, useEffect} from 'react';
 import { Button, Header, Modal, Form } from 'semantic-ui-react';
 import axios from 'axios';
 
-function SalesModal(props) {
-const {showCreateModal, openCreateSalesModal, fetchSales, customers,product, store} = props;
-const [Customer, setCustomer] = useState("");
-const [Product, setProduct] = useState("");
-const [Store, setStore] = useState("");
-const [date, setDate] = useState("");
-const [icon, setIcon] = useState("");
+const SalesModal = ({showCreateModal, openCreateSalesModal, fetchSales, customers,product, store, id, type}) => {
+const [Customer, setCustomer] = useState('');
+const [Product, setProduct] = useState('');
+const [Store, setStore] = useState('');
+const [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
+//const [icon, setIcon] = useState("");
 
+const editSales = async (id) => {
+
+
+
+  await axios.put(`Sales/PutSales/${id}`,{
+    "id":id,
+    "customerId": Customer,
+    "productId": Product,
+    "storeId": Store,
+    "sales": [],
+    dateSold: date,
+    "customer": null,
+        "product": null,
+        "store": null
+        
+  })
+  .then(()=>{ 
+    fetchSales();
+    openCreateSalesModal(false);
+  })
+        .catch(err => {
+          console.log(err);
+     });
+  };
 
 const createSale = () => {
-  console.log(date);
     axios
     .post("Sales/PostSales", {
         customerId: Customer,
         productId: Product,
         storeId: Store,
         dateSold: date,
-        customer: null
+      
     })
-    .then(({ data }) => {
+    .then(() => {
         fetchSales();
         openCreateSalesModal(false)
-        console.log(data);
       })
       .catch(err => {
         console.log(err);
@@ -34,15 +55,21 @@ const createSale = () => {
       });
 };
 
+useEffect(()=> {
+if (customers.length > 0) {setCustomer(customers[0].id)}
+if (product.length > 0) {setProduct(product[0].id)}
+if (store.length > 0) {setStore(store[0].id)} 
+},[customers, product,store])
+
 
   return (
     <Modal open={showCreateModal}>
-      <Modal.Header>Create customer</Modal.Header>
+      <Modal.Header className="modal-header">{type} Sale</Modal.Header>
       <Modal.Content>
       <Form>
       <Form.Field>
       <label>Date sold</label>
-      <input type="Date" onChange={(e) => setDate(e.target.value)}/>
+      <input type="Date" value={date} onChange={(e) => setDate(e.target.value)}/>
     </Form.Field>
       <Form.Field>
       <label>Customer</label>
@@ -77,13 +104,23 @@ const createSale = () => {
         <Button color='black' onClick={() => openCreateSalesModal(false)}>
           Cancel
         </Button>
-        <Button
+        {type === 'create' ? <Button
           content="create"
           labelPosition='right'
           icon='checkmark'
         onClick={createSale}
           positive
         />
+        :
+         <Button
+          content="edit"
+          labelPosition='right'
+          icon='checkmark'
+          onClick={()=>editSales(id)}
+          positive
+        />}
+        
+         
       </Modal.Actions>
     </Modal>
   );

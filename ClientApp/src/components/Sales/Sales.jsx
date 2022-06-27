@@ -27,12 +27,11 @@ constructor(props) {
       currentStore:'',
       perPage: 10,
       items:[],
-      Date: Date()
+      Date: Date(),
+      modalType: 'create'
     };
 }
-// currentDate() {
 
-// }
 componentDidMount() {
   this.fetchSales();
   this.fetchCustomer()
@@ -41,24 +40,18 @@ componentDidMount() {
   this.setState({currentSales: this.state.sales[0]})
   
 }
-// componentWillUnmount() {
-//   if (this.state.sales.length > 0) {this.changePage(1)}  
-// }
 
 changePerPage = (e) => {
   this.setState({perPage:e.target.value})
   const tmpArray = this.state.sales.slice(0 , e.target.value)
   this.setState({items:tmpArray})
 }
-
-
 changePage = (page) => {
   let startItem = (page-1) * this.state.perPage;
   let endItem = startItem + this.state.perPage
   const tmpArray = this.state.sales.slice(startItem , endItem)
   this.setState({items:tmpArray})
 }
-
 fetchCustomer() {
   axios.get("Customers/GetCustomer").then((res) => {
     this.setState({
@@ -94,7 +87,7 @@ fetchSales = () => {
   });
 };
 openCreateSalesModal = (value) => {
-  
+  this.setState({modalType: 'create'})
   this.setState({
     showCreateModal : value,
   });
@@ -102,10 +95,11 @@ openCreateSalesModal = (value) => {
   
 }
 openEditSalesModal = (value, id, customer, product,  store) => {
+  this.setState({modalType: 'edit'})
   this.setState({currentId: id, currentCustomer: customer, 
     currentProduct: product, currentDate: new Date, currentStore: store })
   this.setState({
-    showEditModal: value,
+    showCreateModal: value,
     
   })
 }
@@ -159,9 +153,9 @@ getStoreName(id) {
           fetchSales={this.fetchSales}
           customers={this.state.customers}
           store={this.state.store}
-          product={this.state.product}
-          
-          
+          product={this.state.product}  
+          type={this.state.modalType}
+          id={this.state.currentId}
           />
          <Button primary onClick={() => 
           this.openCreateSalesModal(true)}>New Sale</Button>
@@ -183,7 +177,6 @@ getStoreName(id) {
                 fetchSales={this.fetchSales}   
                 id={this.state.currentId}
                 customer={this.state.currentCustomer}
-                // customer={this.state.currentCustomer}
                 product={this.state.currentProduct}
                 store={this.state.currentStore}
                 closeEditModal={this.closeEditModal}
