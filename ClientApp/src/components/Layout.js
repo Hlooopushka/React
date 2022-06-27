@@ -13,6 +13,12 @@ export class Layout extends Component {
         <Container>
           {this.props.children}
         </Container>
+        <footer>  
+          <hr/>
+          <br/>
+          © 2022 - Ana Ivina
+          <br/>
+        </footer>
       </div>
     );
   }

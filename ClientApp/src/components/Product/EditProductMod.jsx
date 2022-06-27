@@ -22,7 +22,7 @@ await axios.put(`Products/PutProduct/${id}`,{
 };
   return (
     <Modal open={showEditModal}>
-      <Modal.Header>edit Product
+      <Modal.Header>Edit Product
          {/* number {props.id} */}
       </Modal.Header>
     <Modal.Content>
