@@ -46,9 +46,6 @@ const item = getValues(id);
   }
 },[id])
 
-
-
-
   return (
     <Modal open={showModal}>
       <Modal.Header className="modal-header">{type} {source}</Modal.Header>
