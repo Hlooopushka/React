@@ -134,6 +134,7 @@ useEffect(()=>{
         editItem={editStore}
         toggleModal={toggleModal}
         store={store}
+        source="store"
         />
     <Button primary onClick={() => toggleModal('create')}>New Store</Button>
     {error.visible && <Error message={error.message}/>}

@@ -35,3 +35,6 @@
     margin: 15px;
     
 }
+.modal-header {
+    text-transform: capitalize;
+}

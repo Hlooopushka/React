@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Button, Modal, Form } from 'semantic-ui-react';
 
 
-function CreditModal({type, id, createItem, editItem, showModal, toggleModal, customers, store}) {
+function CreditModal({type, id, createItem, editItem, showModal, toggleModal, customers, store, source}) {
 
 const [name, setName] = useState("");
 const [addresse, setAddresse] = useState("");
@@ -22,7 +22,16 @@ const getValues = (id) => {
 const handleClick = () => {
   if (!name || !addresse) {setError({...error,visible: true})}
   else {
-    type === 'create' ? createItem(name, addresse) : editItem(id, name, addresse)}
+    type === 'create' ? createItem(name, addresse) : editItem(id, name, addresse)
+  setName("");
+  setAddresse("");
+  }
+}
+
+const cancelClick = () => {
+  setName("");
+  setAddresse("");
+  toggleModal('create')
 }
 
 useEffect(() => {
@@ -32,15 +41,17 @@ useEffect(() => {
 useEffect(()=>{
   if (id) {
 const item = getValues(id);
-  setName(item.name)
+  setName(item.name);
   setAddresse(item.addresse)
   }
-  
 },[id])
+
+
+
 
   return (
     <Modal open={showModal}>
-      <Modal.Header>Create customer</Modal.Header>
+      <Modal.Header className="modal-header">{type} {source}</Modal.Header>
       <Modal.Content>
       <Form>
         {error.visible && <h4 style={{'color':"red"}}>{error.msg}</h4>}
@@ -55,7 +66,7 @@ const item = getValues(id);
   </Form>
       </Modal.Content>
       <Modal.Actions>
-        <Button color='black' onClick={()=>toggleModal('create')}>
+        <Button color='black' onClick={()=>cancelClick()}>
           Cancel
         </Button>
         <Button
