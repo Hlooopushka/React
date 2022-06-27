@@ -3,7 +3,6 @@ import { Icon, Label, Menu, Table, Button} from 'semantic-ui-react';
 import axios from "axios";
 import BackgroundLoader from '../NavItems/BackgroundLoader';
 import SalesModal from './SalesModal';
-import EditSales from './EditSalesModal';
 import Pagination from '../NavItems/Pagination';
 import PageSelect from '../NavItems/PageSelect';
 import {setPages} from '../../utils/setPages'
@@ -171,16 +170,6 @@ getStoreName(id) {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-        <EditSales 
-                showEditModal={showEditModal} 
-                openEditSalesModal={this.openEditSalesModal}
-                fetchSales={this.fetchSales}   
-                id={this.state.currentId}
-                customer={this.state.currentCustomer}
-                product={this.state.currentProduct}
-                store={this.state.currentStore}
-                closeEditModal={this.closeEditModal}
-                />
           {this.state.items.map((s) => {
             return ( 
             <Table.Row key={s.id} >

@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/onboardingivinadb/databases/onboardingivina",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/onboardingivinadb/databases/ReactDB",
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:ReactDB",
       "secretStore": "AzureAppSettings"
